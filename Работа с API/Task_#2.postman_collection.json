@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "ea670f58-5c87-4ba4-a29f-2811aad41190",
+		"name": "Task_#2",
+		"description": "Коллекция запросов для работы с тестовым агрегатором страховок \"AgentApp\"",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "41964626"
+	},
+	"item": [
+		{
+			"name": "Получение токена авторизации",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"qa@qa.qa\",\r\n    \"password\": \"111\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://partner.agentapp.ru/v1/users/obtain-token",
+				"description": "Запрос - POST-запрос с инфой:  \n\"username\" -- логин пользователя  \n\"password\" -- пароль\n\nВ ответе получаем \"token\""
+			},
+			"response": []
+		},
+		{
+			"name": "Создание водителя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"console.log(jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token cf744b984bcb7d678d812905876f515721a6d7aa",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"first_name\": \"Петухов\",\r\n  \"last_name\": \"Владимир\",\r\n  \"patronymic\": \"Витальевич\",\r\n  \"birth_date\": \"1919-12-19\",\r\n  \"driving_experience_started\": \"1989-12-12\",\r\n  \"driver_licenses\": [\r\n    {\r\n      \"credential_type\": \"DRIVER_LICENSE\",\r\n      \"number\": \"546357\",\r\n      \"series\": \"6667\",\r\n      \"issue_date\": \"2010-10-10\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://partner.agentapp.ru/v1/insured_objects/drivers",
+				"description": "В ответе находятся параметры  \nпо КБМ: \"kbm_value\" -- коэф. КБМ \"is_rsa_checked\" --  \ntrue/false (ответ из РСА о наличии водителя в базе РСА)\n\nНа каждого водителя требуется отдельный запрос.\n\nИз ответа берём \"id\" -- потребуется при создании  \nсущности \"объект страхования\""
+			},
+			"response": []
+		},
+		{
+			"name": "Создание собственника",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token cf744b984bcb7d678d812905876f515721a6d7aa",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"last_name\": \"Петухов\",\r\n  \"first_name\": \"Владимир\",\r\n  \"patronymic\": \"Витальевич\",\r\n  \"birth_date\": \"1919-12-19\",\r\n  \"credential\": [\r\n    {\r\n      \"credential_type\": \"RUSSIAN_INTERNAL_PASSPORT\",\r\n      \"issue_date\": \"2017-03-08\",\r\n      \"issue_point\": \"УФМС\",\r\n      \"issue_point_code\": \"123-456\",\r\n      \"number\": \"123456\",\r\n      \"series\": \"1234\"\r\n    }\r\n  ],\r\n  \"address\": [\r\n    {\r\n      \"address_query\": \"г Санкт-Петербург, г Ломоносов, ул Швейцарская, д 1 к 1, кв 1\",\r\n      \"address_type\": \"LEGAL_ADDRESS\",\r\n      \"region_kladr_id\": \"7800000000000\",\r\n      \"city_kladr_id\": \"7800000600000\"\r\n    },\r\n    {\r\n      \"address_query\": \"г Санкт-Петербург, г Ломоносов, ул Швейцарская, д 1 к 1, кв 1\",\r\n      \"address_type\": \"ACTUAL_ADDRESS\",\r\n      \"region_kladr_id\": \"7800000000000\",\r\n      \"city_kladr_id\": \"7800000600000\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://partner.agentapp.ru/v1/insured_objects/owners/natural_persons",
+				"description": "Создание собственника ФЛ требует следующих полей:\n\n\"last_name\" -- Фамилия\n\n\"first_name\" -- Имя\n\n\"patronymic\" -- Отчество\n\n\"gender\" -- Пол (M,F)\n\n\"birth_date\" -- дата рождения в формате \"1987-01-13\"\n\n\"credential\" -- документы. Массив. Первым элементом необходимо добавить российский паспорт\n\n\"address\" -- адреса. Массив. Два типа адресов - фактический и юридический. Различаются по параметру \"address_type\": \"ACTUAL_ADDRESS\" и \"LEGAL_ADDRESS\" соответственно.\n\nУказание LEGAL_ADDRESS необходимо для получения расчетов страховых компаний.\n\nДля создания страхового объекта брать ID из поля Person"
+			},
+			"response": []
+		},
+		{
+			"name": "Создание страхователя",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token cf744b984bcb7d678d812905876f515721a6d7aa",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"last_name\": \"Петухов\",\r\n  \"first_name\": \"Владимир\",\r\n  \"patronymic\": \"Витальевич\",\r\n  \"birth_date\": \"1919-12-19\",\r\n  \"credential\": [\r\n    {\r\n      \"credential_type\": \"RUSSIAN_INTERNAL_PASSPORT\",\r\n      \"issue_date\": \"2017-03-08\",\r\n      \"issue_point\": \"УФМС\",\r\n      \"issue_point_code\": \"123-456\",\r\n      \"number\": \"123456\",\r\n      \"series\": \"1234\"\r\n    }\r\n  ],\r\n  \"address\": [\r\n    {\r\n      \"address_query\": \"г Санкт-Петербург, г Ломоносов, ул Швейцарская, д 1 к 1, кв 1\",\r\n      \"address_type\": \"LEGAL_ADDRESS\",\r\n      \"region_kladr_id\": \"7800000000000\",\r\n      \"city_kladr_id\": \"7800000600000\"\r\n    },\r\n    {\r\n      \"address_query\": \"г Санкт-Петербург, г Ломоносов, ул Швейцарская, д 1 к 1, кв 1\",\r\n      \"address_type\": \"ACTUAL_ADDRESS\",\r\n      \"region_kladr_id\": \"7800000000000\",\r\n      \"city_kladr_id\": \"7800000600000\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://partner.agentapp.ru/v1/insured_objects/insurants/natural_persons",
+				"description": "Аналогично полному обновлению Собственника (физлицо)"
+			},
+			"response": []
+		},
+		{
+			"name": "Создание автомобиля",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token cf744b984bcb7d678d812905876f515721a6d7aa",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"car_model_id\": 864026180,\r\n  \"engine_power\": 211,\r\n  \"chassis_number\": 123123,\r\n  \"car_body_number\": 123123,\r\n  \"vin_number\": \"WAUZZZ8T4BA037241\",\r\n  \"number_plate\": \"Р904МХ178\",\r\n  \"manufacturing_year\": 2010,\r\n  \"max_mass\": null,\r\n  \"credential\": [\r\n    {\r\n      \"credential_type\": \"VEHICLE_REGISTRATION\",\r\n      \"issue_date\": \"2010-11-01\",\r\n      \"number\": \"267461\",\r\n      \"series\": \"78УН\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://partner.agentapp.ru/v3/insured_objects/cars",
+				"description": "Создание автомобиля требует следующих полей:  \n\"car_model\" -- id Модели  \n\"engine_power\" -- мощность двигателя в л.с. Уже присутствует, при PATCH'е не требуется указывать.  \n\"chassis_number\" -- Номер шасси (не обязательно)  \n\"car_body_number\" -- Номер кузов (прицеп) (не обязательно)  \n\"vin_number\" -- ВИН (не обязательно)  \n\"number_plate\" -- Номерной знак (не обязательно)  \n\"manufacturing_year\" -- год выпуска в формате \"2010\"  \n\"max_mass\" -- максимальная масса (для категории Д)  \n\"credential\" -- документ.\n\nНеобходимо указать минимум один из четырёх параметров:  \n\"vin_number\" -- ВИН (не обязательно)  \n\"number_plate\" -- Номерной знак (не обязательно)\n\nВ ответе придут:  \n\"id\""
+			},
+			"response": []
+		},
+		{
+			"name": "Объединение субъектов и объектов",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token cf744b984bcb7d678d812905876f515721a6d7aa",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"drivers\": [\r\n    \"cbfd9b78-c825-44b2-b811-7c9b654461b1\"],\r\n    \"car\": \"dd493987-782d-4615-aec6-320880b48f9e\",\r\n    \"owner\": \"849d58b6-2264-496d-b84b-08a02b57ef15\",\r\n    \"insurant\": \"0e6d33c5-4912-4c6c-8d9b-bd1ef0fa241b\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://partner.agentapp.ru/v1/insured_objects/",
+				"description": "Создаём техническую сущность - \"объект страхования\".  \n\"drivers\" -- массив водителей  \n\"owner\" -- собственник  \n\"car\" -- автомобиль  \n\"insurant\" -- Страхователь\n\nИз ответа берём \"id\" -- потребуется при создании договора"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

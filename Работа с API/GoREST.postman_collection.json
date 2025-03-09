@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "f8e3c893-2604-4540-983e-7173f284b966",
+		"name": "GoREST",
+		"description": "Коллекция для работы с API GoREST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "41964626"
+	},
+	"item": [
+		{
+			"name": "Create a new user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "28f1dc6d17209e49c691aa47727c76aa3d162552bb9daafff9e211a6ca3467e2"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"email\":\"email@gmail.com\", \r\n    \"firstname\":\"JOJO\", \r\n    \"lastname\":\"LastNames\", \r\n    \"gender\":\"male\",\r\n    \"name\": \"justjojo\",\r\n    \"status\": \"active\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://gorest.co.in/public/v2/users"
+			},
+			"response": [
+				{
+					"name": "Create User1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"email\":\"sosal@gmail.com\", \r\n    \"firstname\":\"JOJO\", \r\n    \"lastname\":\"Akakiy\", \r\n    \"gender\":\"male\",\r\n    \"name\": \"privet\",\r\n    \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://gorest.co.in/public/v2/users"
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get userlist",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{vault:go-rest-api:token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://gorest.co.in/public/v2/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Get info about created user",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"protocolVersion": "auto"
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{vault:go-rest-api:token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users?id=7730425",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "7730425"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get info about new users",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://gorest.co.in/public/v2/users?id=7730425",
+							"protocol": "https",
+							"host": [
+								"gorest",
+								"co",
+								"in"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "7730425"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Change user`s email and name",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"email\":\"newemail@gmail.com\", \r\n    \"name\": \"katana\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://gorest.co.in/public/v2/users/7730425"
+			},
+			"response": []
+		},
+		{
+			"name": "Change user`s status and email",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"email\":\"newemail@gmail.com\", \r\n    \"name\": \"katana\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://gorest.co.in/public/v2/users/7730425"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a created user",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "https://gorest.co.in/public/v2/users/7730425"
+			},
+			"response": []
+		},
+		{
+			"name": "Get info about deleted user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://gorest.co.in/public/v2/users/7730425"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete all created users",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://gorest.co.in/public/v2/users/"
+			},
+			"response": [
+				{
+					"name": "Delete User1",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": "https://gorest.co.in/public/v2/users/7730439"
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Delete User2",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": "https://gorest.co.in/public/v2/users/7730440"
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Delete User3",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": "https://gorest.co.in/public/v2/users/7730441"
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "28f1dc6d17209e49c691aa47727c76aa3d162552bb9daafff9e211a6ca3467e2"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
